@@ -1,0 +1,32 @@
+# Tests
+
+## Test 1 - Homepage Loading Smoke Test [sanity]
+Viewport: desktop (1280x800)
+Description: Verifies that the FATCAP studio landing page loads successfully, displays the main logo or custom background canvas, and renders the primary navigation links.
+Steps:
+1. Navigate to "/"
+2. Wait 2 seconds for animations to initialize
+3. Check that the page title contains "FATCAP"
+4. Verify the navigation bar with link "WORK" is visible
+Expected:
+The page title should be "FATCAP — Motion & Design Studio" and the navigation link "WORK" should be present on the page.
+
+## Test 2 - Work Section Page Navigation
+Viewport: desktop (1280x800)
+Description: Verifies that navigating to the work page loads the work grid and lists the projects.
+Steps:
+1. Navigate to "/work.html"
+2. Wait 1 second
+3. Verify that the project section header or a project card is visible
+Expected:
+The work page should load and showcase studio projects.
+
+## Test 3 - Responsive Navigation Menu Check
+Viewport: mobile (375x667)
+Description: Verifies the mobile viewport presentation of the navigation header on mobile devices.
+Steps:
+1. Navigate to "/"
+2. Wait 1 second
+3. Verify that the navigation pill is rendered
+Expected:
+The navigation element should be styled and scaled appropriately for mobile width.

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Fatcap Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet" />
+  <script src="/site-config.js"></script>
+  <style>
+    :root {
+      --black:    #0A0A0A;
+      --white:    #FFFFFF;
+      --orange:   #FF4D00;
+      --muted:    #888884;
+      --border:   #E8E8E6;
+      --bg-warm:  #F5F4EF;
+      --font:     "GT America", "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+      --ease:     cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    }
+    @font-face { font-family:"GT America"; src:url("assets/fonts/GT-America-Standard-Light.woff2") format("woff2"); font-weight:300; font-style:normal; font-display:swap; }
+    @font-face { font-family:"GT America"; src:url("assets/fonts/GT-America-Standard-Regular.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family:"GT America"; src:url("assets/fonts/GT-America-Standard-Medium.woff2") format("woff2"); font-weight:500; font-style:normal; font-display:swap; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { font-family:var(--font); background:var(--white); color:var(--black); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    a { color:inherit; text-decoration:none; }
+    ul { list-style:none; }
+    img, video { display:block; max-width:100%; }
+
+    /* NAV */
+    #nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between; padding:30px 48px;
+      background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-brand { font-size:13px; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; color:var(--black); }
+    .nav-links { display:flex; gap:44px; }
+    .nav-links a { font-size:13px; font-weight:400; letter-spacing:0.04em; color:var(--muted); transition:color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--black); }
+
+    /* PAGE HEADER */
+    .page-header { padding:168px 48px 80px; }
+    .page-header-inner { max-width:1300px; margin:0 auto; display:flex; align-items:flex-end; justify-content:space-between; }
+    .page-title { font-size:clamp(52px,8vw,120px); font-weight:300; letter-spacing:-0.035em; line-height:0.95; }
+    .page-intro { font-size:clamp(14px,1.3vw,17px); font-weight:300; color:var(--muted); line-height:1.6; max-width:320px; text-align:right; padding-bottom:8px; }
+
+    /* CAT NAV */
+    .cat-nav { padding:0 48px 64px; border-bottom:1px solid var(--border); }
+    .cat-nav-inner { max-width:1300px; margin:0 auto; display:flex; gap:36px; }
+    .cat-link { font-size:12px; font-weight:400; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); transition:color 0.3s; }
+    .cat-link:hover, .cat-link.active { color:var(--black); }
+
+    /* SHOP SECTIONS */
+    .shop-section { padding:100px 48px; border-bottom:1px solid var(--border); }
+    .shop-section:last-of-type { border-bottom:none; }
+    .shop-section-inner { max-width:1300px; margin:0 auto; }
+    .shop-section-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:56px; }
+    .shop-section-title { font-size:clamp(32px,4vw,60px); font-weight:300; letter-spacing:-0.025em; line-height:1; }
+    .shop-section-count { font-size:12px; font-weight:400; color:var(--muted); letter-spacing:0.06em; }
+
+    /* PRODUCT GRID */
+    .product-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:3px; }
+    .product { display:flex; flex-direction:column; gap:16px; text-decoration:none; color:inherit; }
+    .product:hover .product-img img { transform:scale(1.04); }
+    .product-img { aspect-ratio:1/1; overflow:hidden; }
+    .product-img img { width:100%; height:100%; object-fit:cover; transition:transform 1s var(--ease-out); }
+    .product-meta { display:flex; flex-direction:column; gap:4px; padding:0 2px; }
+    .product-name { font-size:14px; font-weight:400; letter-spacing:-0.01em; color:var(--black); }
+    .product-type { font-size:11px; font-weight:400; letter-spacing:0.07em; color:var(--muted); text-transform:uppercase; }
+    .product-price { font-size:13px; font-weight:400; color:var(--black); margin-top:4px; }
+
+    /* MERCH GRID */
+    .merch-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+    .merch-item { display:flex; flex-direction:column; gap:16px; text-decoration:none; color:inherit; }
+    .merch-item:hover .product-img img { transform:scale(1.04); }
+    .merch-item .product-img { aspect-ratio:4/3; }
+
+    /* COMING SOON */
+    .coming-soon { padding:80px 0; text-align:center; }
+    .coming-soon-label { font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+    .coming-soon-text { font-size:clamp(18px,2vw,28px); font-weight:300; color:var(--black); letter-spacing:-0.01em; }
+
+    /* FOOTER */
+    footer { background:var(--black); padding:88px 48px 52px; }
+    .footer-inner { max-width:1300px; margin:0 auto; }
+    .footer-top { display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:64px; border-bottom:1px solid rgba(255,255,255,0.07); margin-bottom:40px; }
+    .footer-cta { font-size:clamp(28px,3.8vw,58px); font-weight:300; letter-spacing:-0.02em; line-height:1.15; color:var(--white); }
+    .footer-cta a { color:var(--orange); border-bottom:1px solid rgba(255,77,0,0.3); transition:border-color 0.3s; }
+    .footer-cta a:hover { border-color:var(--orange); }
+    .footer-nav { display:flex; flex-direction:column; gap:10px; text-align:right; }
+    .footer-nav a { font-size:13px; font-weight:400; letter-spacing:0.04em; color:rgba(255,255,255,0.35); transition:color 0.3s; }
+    .footer-nav a:hover { color:var(--white); }
+    .footer-bottom { display:flex; justify-content:space-between; align-items:center; }
+    .footer-copy { font-size:11px; font-weight:400; color:rgba(255,255,255,0.18); letter-spacing:0.07em; }
+    .foot-socials { display:flex; gap:28px; }
+    .foot-socials a { font-size:11px; font-weight:400; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.28); transition:color 0.3s; }
+    .foot-socials a:hover { color:var(--white); }
+
+    /* REVEAL */
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .delay-1 { transition-delay:0.1s; }
+    .delay-2 { transition-delay:0.2s; }
+    .delay-3 { transition-delay:0.3s; }
+
+    /* RESPONSIVE */
+    @media (max-width:1024px) {
+      #nav { padding:30px 40px; }
+      .page-header, .cat-nav, .shop-section, footer { padding-left:40px; padding-right:40px; }
+    }
+    @media (max-width:860px) {
+      #nav { padding:22px 28px; }
+      .page-header { padding:148px 28px 64px; }
+      .cat-nav { padding:0 28px 52px; }
+      .shop-section { padding:72px 28px; }
+      footer { padding:72px 28px 44px; }
+      .page-header-inner { flex-direction:column; gap:24px; align-items:flex-start; }
+      .page-intro { text-align:left; max-width:100%; }
+      .product-grid { grid-template-columns:repeat(2,1fr); }
+      .merch-grid { grid-template-columns:repeat(2,1fr); }
+      .footer-top { flex-direction:column; gap:40px; align-items:flex-start; }
+      .footer-nav { text-align:left; }
+    }
+    @media (max-width: 600px) {
+      #nav { padding: 12px 16px; }
+      .nav-brand { display: none !important; }
+      .nav-links { width: 100%; justify-content: space-around; gap: 0; }
+      .nav-links a { padding: 6px 12px; font-size: 12px; }
+      .page-header { padding:130px 20px 52px; }
+      .cat-nav { padding:0 20px 44px; }
+      .shop-section { padding:60px 20px; }
+      footer { padding:60px 20px 36px; }
+      .product-grid, .merch-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="nav"></header>
+  <div class="page-header"><div class="page-header-inner" id="page-header-inner"></div></div>
+  <div class="cat-nav"><div class="cat-nav-inner" id="cat-nav-inner"></div></div>
+  <div id="shop-sections"></div>
+  <footer><div class="footer-inner" id="footer-inner"></div></footer>
+
+  <script>
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  // ── NAV ──────────────────────────────────────────────────────
+  document.title = 'Shop — ' + SITE.name;
+  var navEl = document.getElementById('nav');
+  var brandA = el('a','nav-brand', SITE.name); brandA.href='index.html';
+  var ul = el('ul','nav-links');
+  [['Work','work.html',false],['About','index.html#about',false],['Services','index.html#services',false],['Shop','shop.html',true]].forEach(function(d) {
+    var li=document.createElement('li');
+    var a=el('a', d[2]?'active':'', d[0]); a.href=d[1];
+    li.appendChild(a); ul.appendChild(li);
+  });
+  navEl.appendChild(brandA); navEl.appendChild(ul);
+
+  // ── PAGE HEADER ───────────────────────────────────────────────
+  var ph = document.getElementById('page-header-inner');
+  ph.appendChild(el('h1','page-title','Shop'));
+  ph.appendChild(el('p','page-intro',
+    'Fonts, textures, plugins, and objects<br>made in the studio — for designers who<br>care about the details.'));
+
+  // ── CATEGORY NAV ─────────────────────────────────────────────
+  var catNav = document.getElementById('cat-nav-inner');
+  var catDefs = [
+    { id:'fonts',    label:'Fonts' },
+    { id:'textures', label:'Textures' },
+    { id:'plugins',  label:'Plugins' },
+    { id:'merch',    label:'Merch' }
+  ];
+  catDefs.forEach(function(c) {
+    var a = el('a','cat-link', c.label);
+    a.href = '#' + c.id;
+    catNav.appendChild(a);
+  });
+
+  // ── SHOP SECTIONS ────────────────────────────────────────────
+  var container = document.getElementById('shop-sections');
+
+  function makeProductGrid(items, gridClass) {
+    var grid = el('div', gridClass || 'product-grid');
+    items.forEach(function(item, i) {
+      var delays = ['','delay-1','delay-2','delay-3'];
+      var a = el('a', (gridClass==='merch-grid'?'merch-item ':'product ') + 'reveal ' + (delays[i%4]||''));
+      a.href = item.link || '#';
+
+      var imgDiv = el('div','product-img');
+      if (item.image) {
+        var img = document.createElement('img'); img.src=item.image; img.alt=item.name;
+        imgDiv.appendChild(img);
+      } else {
+        imgDiv.style.background = item.bg || '#F5F4EF';
+      }
+
+      var meta = el('div','product-meta');
+      meta.appendChild(el('span','product-name', item.name));
+      meta.appendChild(el('span','product-type', item.type));
+      meta.appendChild(el('span','product-price', item.price));
+
+      a.appendChild(imgDiv); a.appendChild(meta);
+      grid.appendChild(a);
+    });
+    return grid;
+  }
+
+  catDefs.forEach(function(c) {
+    var sec = el('section','shop-section');
+    sec.id = c.id;
+    var inner = el('div','shop-section-inner');
+
+    var header = el('div','shop-section-header reveal');
+    header.appendChild(el('h2','shop-section-title', c.label));
+
+    var items = SITE[c.id] || [];
+    header.appendChild(el('span','shop-section-count', items.length > 0 ? items.length + ' items' : 'Coming soon'));
+    inner.appendChild(header);
+
+    if (items.length === 0) {
+      var cs = el('div','coming-soon');
+      cs.appendChild(el('p','coming-soon-label','In the works'));
+      var msgs = {
+        fonts:    'Original typefaces from the Fatcap type lab.',
+        textures: 'Film grain, paper, noise and canvas texture packs.',
+        plugins:  'Scripts and presets built in the studio.',
+        merch:    'Objects made in small runs. Worth owning.'
+      };
+      cs.appendChild(el('p','coming-soon-text', msgs[c.id] || 'Coming soon.'));
+      inner.appendChild(cs);
+    } else {
+      inner.appendChild(makeProductGrid(items, c.id === 'merch' ? 'merch-grid' : 'product-grid'));
+    }
+
+    sec.appendChild(inner);
+    container.appendChild(sec);
+  });
+
+  // ── FOOTER ───────────────────────────────────────────────────
+  var footEl = document.getElementById('footer-inner');
+  var ftop = el('div','footer-top');
+  ftop.appendChild(el('p','footer-cta',
+    "Let's make something<br>worth watching.<br>" +
+    '<a href="mailto:' + SITE.email + '">' + SITE.email + '</a>'));
+  var fnav = el('nav','footer-nav');
+  [['Work','work.html'],['About','index.html#about'],['Services','index.html#services'],['Shop','shop.html']].forEach(function(d) {
+    var a=el('a','',d[0]); a.href=d[1]; fnav.appendChild(a);
+  });
+  ftop.appendChild(fnav);
+  var fbot = el('div','footer-bottom');
+  fbot.appendChild(el('p','footer-copy','&copy; '+new Date().getFullYear()+' '+SITE.name));
+  var fsoc = el('div','foot-socials');
+  if (SITE.instagram) { var ig=el('a','','Instagram'); ig.href=SITE.instagram; ig.target='_blank'; ig.rel='noopener'; fsoc.appendChild(ig); }
+  if (SITE.behance)   { var bh=el('a','','Behance');   bh.href=SITE.behance;   bh.target='_blank'; bh.rel='noopener'; fsoc.appendChild(bh); }
+  fbot.appendChild(fsoc);
+  footEl.appendChild(ftop); footEl.appendChild(fbot);
+
+  // ── SCROLL REVEAL ────────────────────────────────────────────
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
+    });
+  }, { threshold:0.06, rootMargin:'0px 0px -24px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(e) { obs.observe(e); });
+
+  // ── SCROLL ACTIVE CAT LINK ────────────────────────────────────
+  var catLinks = document.querySelectorAll('.cat-link');
+  window.addEventListener('scroll', function() {
+    var scrollY = window.scrollY + 120;
+    var active = 'fonts';
+    catDefs.forEach(function(c) {
+      var s = document.getElementById(c.id);
+      if (s && s.offsetTop <= scrollY) active = c.id;
+    });
+    catLinks.forEach(function(link) {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + active);
+    });
+  }, { passive:true });
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.appdeploy
+node_modules/
+.DS_Store
+dist/
+build/
+test-results/
