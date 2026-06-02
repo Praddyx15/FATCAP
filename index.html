@@ -86,6 +86,15 @@
       transition: width 0.4s cubic-bezier(0.23,1,0.32,1), height 0.4s cubic-bezier(0.23,1,0.32,1), border-color 0.4s;
     }
 
+    @media (hover: none), (pointer: coarse) {
+      body, a, button, .proj, .shop-cat, .nav-links a {
+        cursor: auto !important;
+      }
+      #cursor, #cursor-ring {
+        display: none !important;
+      }
+    }
+
     /* FLOATING PILL NAVIGATION */
     #nav {
       position: fixed;
@@ -599,8 +608,7 @@
     .foot-socials a:hover { color: var(--white); }
 
     /* REVEAL ANIMATIONS */
-    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 1s var(--ease-out), transform 1s var(--ease-out); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal { opacity: 0; will-change: transform, opacity; }
     .delay-1 { transition-delay: 0.12s; }
     .delay-2 { transition-delay: 0.22s; }
     .delay-3 { transition-delay: 0.32s; }
@@ -615,15 +623,21 @@
     }
     @media (max-width: 860px) {
       .section { padding: 100px 28px; }
-      #nav { padding: 22px 28px; } #nav.scrolled { padding: 16px 28px; }
+      #nav { padding: 8px 24px; top: 16px; width: calc(100% - 48px); } 
+      #nav.scrolled { padding: 8px 24px; top: 12px; }
       footer { padding: 72px 28px 44px; }
-      .nav-links { gap: 24px; }
+      .nav-links { gap: 8px; }
+      .nav-links a { padding: 6px 14px; font-size: 12px; }
       .about-grid { grid-template-columns: 1fr; gap: 60px; }
-      .about-team { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-      .work-grid { grid-template-columns: repeat(6, 1fr); }
+      .about-team { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .work-grid { display: flex; flex-direction: column; gap: 48px; }
+      .proj { width: 100% !important; }
+      .proj-thumb { aspect-ratio: 16/10 !important; }
       .shop-grid { grid-template-columns: repeat(2, 1fr); }
       .reviews-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
       .svc-tags { display: none; }
+      .menu__item-link { padding: 24px 28px; }
+      .marquee__part { font-size: 2.2rem; }
       .footer-top { flex-direction: column; gap: 48px; align-items: flex-start; }
       .footer-nav { text-align: left; }
     }
@@ -637,13 +651,13 @@
       .section { padding: 80px 20px; }
       #nav {
         width: calc(100% - 24px) !important;
-        padding: 8px 16px !important;
-        top: 16px !important;
+        padding: 6px 12px !important;
+        top: 12px !important;
         border-radius: 30px !important;
       }
       #nav.scrolled {
-        padding: 8px 16px !important;
-        top: 12px !important;
+        padding: 6px 12px !important;
+        top: 10px !important;
       }
       .nav-brand {
         display: none !important;
@@ -654,14 +668,16 @@
         gap: 0 !important;
       }
       .nav-links a {
-        padding: 6px 12px !important;
-        font-size: 12px !important;
+        padding: 6px 10px !important;
+        font-size: 11px !important;
       }
       footer { padding: 60px 20px 36px; }
       .about-team { grid-template-columns: 1fr 1fr; }
-      .work-grid { grid-template-columns: 1fr !important; }
+      .work-grid { display: flex; flex-direction: column; gap: 36px; }
       .reviews-grid { grid-template-columns: 1fr; }
       .shop-grid { grid-template-columns: 1fr 1fr; }
+      .menu__item-link { padding: 18px 20px; font-size: 1.6rem; }
+      .marquee__part { font-size: 1.6rem; }
     }
 
     /* ── FlowingMenu Styling ── */
@@ -1180,7 +1196,8 @@
     const BLOOM = 0.45;
     const TS = 0.5;
 
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const isMobileTablet = window.matchMedia('(max-width: 860px)').matches;
+    const dpr = Math.min(isMobileTablet ? 1.0 : 1.5, window.devicePixelRatio || 1);
     const renderer = new Renderer({
       canvas: canvas,
       dpr: dpr,
@@ -1286,7 +1303,7 @@
           wob = mat2(c0, c1, c2, c0);
         }
 
-        const int STEPS = 100;
+        const int STEPS = 45;
         for (int i = 0; i < STEPS; i++) {
           p = vec3(f, z);
           p.xz = p.xz * wob;
@@ -1438,9 +1455,9 @@
     const smoother = ScrollSmoother.create({
       wrapper: '#smooth-wrapper',
       content: '#smooth-content',
-      smooth: 1.5,
-      effects: true,
-      normalizeScroll: true,
+      smooth: isMobileTablet ? 0 : 1.15,
+      effects: !isMobileTablet,
+      normalizeScroll: false,
       onUpdate: self => {
         currentScrollY = self.y;
       }
@@ -1765,20 +1782,32 @@
       }, 150);
     }
 
-    // ── SCROLL REVEAL (for sections below) ──
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) { 
-          entry.target.classList.add('visible'); 
-          obs.unobserve(entry.target); 
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
-    
-    // We observe all reveal classes after a slight delay to ensure dynamic content exists
+    // ── SCROLL REVEAL (GSAP SCROLLTRIGGER FOR TYPOGRAPHY & CARDS) ──
     setTimeout(() => {
-      document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
-    }, 100);
+      gsap.utils.toArray('.reveal').forEach(el => {
+        let delay = 0;
+        if (el.classList.contains('delay-1')) delay = 0.1;
+        else if (el.classList.contains('delay-2')) delay = 0.2;
+        else if (el.classList.contains('delay-3')) delay = 0.3;
+        else if (el.classList.contains('delay-4')) delay = 0.4;
+
+        gsap.fromTo(el,
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.0,
+            delay: delay,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+    }, 150);
   </script>
 </body>
 </html>
